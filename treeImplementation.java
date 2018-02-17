@@ -80,6 +80,35 @@ public class ImplementaionTree {
 		}
 	
 	}
+	
+	public void depthFirst() {
+		Stack<Tree> stack=new Stack<Tree>();
+		Tree node=root;
+		stack.push(node);
+		node.visited=true;
+		
+		while(!stack.isEmpty()) {
+			Tree node1=(Tree)stack.pop();
+			System.out.println(node1.value);
+			
+			if(node1.right!=null) {
+				node1.visited=true;
+				stack.push(node1.right);
+			}
+			
+			if(node1.right==null) {
+				stack.push(node.left.right);
+			}
+			
+			if(node1.left!=null) {
+				node1.visited=true;
+				stack.push(node1.left);
+			}
+			
+			else
+				stack.pop();
+		}
+	}
 															//			  20
 	public void preorderPrint(Tree current){				//		   /     \
 		if(current!=null){									//		 16	      27
@@ -105,55 +134,31 @@ public class ImplementaionTree {
 		}
 	}
 	
-	public void deleteElement(int value){
-		Tree current=root;
-		Tree parent=root;
+	public Tree deleteElement(Tree node,int value){
+		if(node==null)
+			return null;
 		
-		
-		if(current.left!=null && current.right!=null){
-			if(current==root)
-				current=null;
-			else{
-				if(current.value<value)
-					parent.left=null;
-				else
-					parent.right=null;
-			}
+		if(value<node.value) {
+			node.left=deleteElement(node.left,value);
+		}	
+		else if(value>node.value){
+			node.right=deleteElement(node.right,value);			
 		}
 		
-		else if(current.left!=null && current.right==null){
-			if(current==root)
-				current=null;
-			else{
-				if(current.value<value)
-					parent.left=current.right;
-				else
-					parent.right=current.right;
+		else {
+			if(node.left==null && node.right==null)
+				node=null;
+			else if(node.left==null)
+				node=node.right;
+			else if(node.right==null)
+				node=node.left;
+			else {
+				Tree tempNode=smallestNode(node.right);
+				node.value=tempNode.value;
+				node.right=deleteElement(node.left,tempNode.value);
 			}
 		}
-		
-		else if(current.left==null && current.right!=null){
-			if(current==root)
-				current=null;
-			else{
-				if(current.value<value)
-					parent.left=current.left;
-				else
-					parent.right=current.left;
-			}
-		}
-		
-		else{
-			if(current==root)
-				current=null;
-			else{
-				if(current.value<value)
-					parent.right=current.left;
-				else
-					parent.left=current.right;
-			}
-		}
-		
+		return node;
 	}
 	
 	public static void main(String[] args) {
@@ -176,4 +181,5 @@ public class ImplementaionTree {
 		xyz.inorderPrint(root);
 		System.out.println();
 		xyz.breadthFirst();
+		xyz.depthFirst();
 	}
